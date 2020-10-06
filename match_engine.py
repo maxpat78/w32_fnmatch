@@ -215,44 +215,53 @@ if __name__ == '__main__':
             r = match(case[0], case[1])
             if r != case[2]:
                     failed += 1
-                    print "'%s' ~= '%s' is %s, expected %s" % (case[0], case[1], r, case[2])
+                    print ("'%s' ~= '%s' is %s, expected %s" % (case[0], case[1], r, case[2]))
     if failed:
-            print "%d/%d tests failed!" % (failed, len(cases))
+            print ("%d/%d self tests failed!" % (failed, len(cases)))
     else:
-            print "All %d tests passed!" % len(cases)
+            print ("All %d self tests passed!" % len(cases))
 
 ##    sys.exit()
 # Test Command Prompt behaviour
+failed = 0
 for case in cases:
-	if not os.path.exists(case[0]): open(case[0], 'w')
+    if not os.path.exists(case[0]): open(case[0], 'w')
 # DIR behaviour
-	s = ''
-	try:
-		s = subprocess.check_output(['cmd', '/c', 'dir', case[1]], stderr=subprocess.STDOUT, shell=True)
-	except:
-		pass
-	Match = re.search('%s\r(?im)'%case[0], s) != None
-	if Match != case[2]:
-		print "!!! Check case %s: DIR returned\n%s" % (str(case), s)
+    s = b''
+    try:
+        s = subprocess.check_output(['cmd', '/c', 'dir', case[1]], stderr=subprocess.STDOUT, shell=True)
+    except:
+        pass
+    Match = re.search('(?im)%s\r'%re.escape(case[0]), s.decode('mbcs')) != None
+    if Match != case[2]:
+        print ("!!! Check case %s: DIR returned\n%s" % (str(case), s.decode('mbcs')))
+        failed+=1
 
 # FOR behaviour
-	s = ''
-	try:
-		s = subprocess.check_output('cmd /c for %%f in (%s) do @echo %%f'%case[1], stderr=subprocess.STDOUT, shell=True)
-	except:
-		pass
-	Match = re.search('%s\r(?im)'%case[0], s) != None
-	if Match != case[2]:
-		print "!!! Check case %s: FOR returned\n%s" % (str(case), s)
+    s = b''
+    try:
+        s = subprocess.check_output('cmd /c for %%f in (%s) do @echo %%f'%case[1], stderr=subprocess.STDOUT, shell=True)
+    except:
+        pass
+    Match = re.search('(?im)%s\r'%re.escape(case[0]), s.decode('mbcs')) != None
+    if Match != case[2]:
+        print ("!!! Check case %s: FOR returned\n%s" % (str(case), s.decode('mbcs')))
+        failed+=1
 
 # COPY behaviour
-	s = ''
-	try:
-		s = subprocess.check_output('cmd /c copy %s NUL:'%case[1], stderr=subprocess.STDOUT, shell=True)
-	except:
-		pass
-	Match = re.search('%s\r(?im)'%case[0], s) != None
-	if Match != case[2]:
-		print "!!! Check case %s: COPY returned\n%s" % (str(case), s)
+    s = b''
+    try:
+        s = subprocess.check_output('cmd /c copy %s NUL:'%case[1], stderr=subprocess.STDOUT, shell=True)
+    except:
+        pass
+    Match = re.search('%s'%'1 file', s.decode('mbcs')) != None
+    if Match != case[2]:
+        print ("!!! Check case %s: COPY returned\n%s" % (str(case), s.decode('mbcs')))
+        failed+=1
 
-	os.remove(case[0])
+    os.remove(case[0])
+
+if failed:
+        print ("%d/%d command prompt tests failed!" % (failed, len(cases)))
+else:
+        print ("All %d command prompt tests passed!" % len(cases))
