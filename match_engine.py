@@ -2,7 +2,7 @@ import fnmatch, os, re, subprocess, sys
 
 # Non-regex matching algorithm and prompt tester
 
-COPYRIGHT = '''Copyright (C)2012, by maxpat78. GNU GPL v2 applies.'''
+COPYRIGHT = '''Copyright (C)2012,2020 by maxpat78. GNU GPL v2 applies.'''
 
 """ Win32 CMD command prompt (NT 3.1+) wildcards matching algorithm,
 implementing the following rules (when the file system supports long names):
