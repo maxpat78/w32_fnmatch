@@ -1,7 +1,6 @@
-import fnmatch
-import re
+import fnmatch, re, sys
 
-COPYRIGHT = '''Copyright (C)2012, by maxpat78. GNU GPL v2 applies.'''
+COPYRIGHT = '''Copyright (C)2012-24, by maxpat78. GNU GPL v2 applies.'''
 
 """ Win32 CMD command prompt (NT 3.1+) wildcards matching algorithm,
 implementing the following rules (when the file system supports long names):
@@ -57,8 +56,7 @@ def win32_translate(wild):
 		? is regex [^.] if not followed by wildcards only (until end or the next dot)
 		? becomes regex [^.]? if followed by wildcards only
 		. followed by wildcards only alternatively matches a base name with or
-		without extension, so the regex becomes base$|base\.
-	"""
+		without extension, so the regex becomes base$|base.	"""
 	i, n = 0, len(wild)
 	res = ''
 	while i < n:
@@ -76,18 +74,18 @@ def win32_translate(wild):
 		elif c == '.':
 			if i == n-1: break
 			if _all_jolly(i+1, wild):
-				res = res + '$|%s\.' % res
+				res = res + '$|%s\\.' % res
 			else:
-				res = res + '\.'
+				res = res + '\\.'
 		else:
 			res = res + re.escape(c)
 		i = i+1
 		
 	# Exception: ending star with 3-chars extension matches all longer extensions
-	if re.search('\*\.[^.]{3}$', wild):
+	if re.search('\\*.[^.]{3}$', wild):
 	    res += '[^.]*'
 
-	res = '^%s$(?i)' % res
+	res = '(?i)^%s$' % res
 	#~ print "DEBUG: Wildcard '%s' ==> Regex '%s'" % (wild, res)
 	return res
 
@@ -190,9 +188,9 @@ if __name__ == '__main__':
 		r = fnmatch.fnmatch(case[0], case[1])
 		if r != case[2]:
 			failed += 1
-			print "'%s' ~= '%s' is %s, expected %s" % (case[0], case[1], r, case[2])
+			print ("'%s' ~= '%s' is %s, expected %s" % (case[0], case[1], r, case[2]))
 
 	if failed:
-		print "%d/%d tests failed!" % (failed, len(cases))
+		print ("%d/%d tests failed!" % (failed, len(cases)))
 	else:
-		print "All %d tests passed!" % len(cases)
+		print ("All %d tests passed!" % len(cases))

@@ -2,7 +2,7 @@ import fnmatch, os, re, subprocess, sys
 
 # Non-regex matching algorithm and prompt tester
 
-COPYRIGHT = '''Copyright (C)2012,2020 by maxpat78. GNU GPL v2 applies.'''
+COPYRIGHT = '''Copyright (C)2012,2020,2024 by maxpat78. GNU GPL v2 applies.'''
 
 """ Win32 CMD command prompt (NT 3.1+) wildcards matching algorithm,
 implementing the following rules (when the file system supports long names):
@@ -193,17 +193,25 @@ if __name__ == '__main__':
 ('abc.e.e', '*.e*', True),
 ('abc.e.effe', '*.e*e', True),
 ('abcde.fgh', '*.fgh', True),
-('abcde.fghi', '*.fgh', True), # Prompt says TRUE!!!
-('abcde.fghi', '*.fg?', True), # And so here!
-('abcde.fghi', '*.?gh', True), # And so here!
-('abcde.fghi', '*.f??', True), # And so here!
-('abcde.fghil', 'abc??*.fgh', True), # And so here!
+#~ ('abcde.fghi', '*.fgh', True), # Prompt says TRUE!!!
+#~ ('abcde.fghi', '*.fg?', True), # And so here!
+#~ ('abcde.fghi', '*.?gh', True), # And so here!
+#~ ('abcde.fghi', '*.f??', True), # And so here!
+#~ ('abcde.fghil', 'abc??*.fgh', True), # And so here!
+('abcde.fghi', '*.fgh', False), # Win11 fixed this and next 4
+('abcde.fghi', '*.fg?', False),
+('abcde.fghi', '*.?gh', False),
+('abcde.fghi', '*.f??', False),
+('abcde.fghil', 'abc??*.fgh', False),
+('abcde.fghi', '*.f???', True),
+('abcde.fghil', 'abc??*.fgh??', True),
 ('abcde.fghi', 'abc??.fgh', False), # Here Prompt works!!!
 ('abcde.fghil', '*.fghi', False), # Here too...
 ('abcde.fgh.fgh', '*.fgh', True),
 ('abcde.fgh.fg', '*.fgh', False),
 ('abcde.fg.fgh', '*.fgh', True),
-('abcde.fghabc.fghab', '*.fgh', True), # And here!
+#~ ('abcde.fghabc.fghab', '*.fgh', True), # And here!
+('abcde.fghabc.fghab', '*.fgh', False), # new Win11 behavior
 ('abcde.fg.fgh.fgho', '*.fghi', False),
 ('abcde.fg.fgh.fgho', '*.fgh?', True),
     )
