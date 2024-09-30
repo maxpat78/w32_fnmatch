@@ -57,6 +57,7 @@ def win32_translate(wild):
 		? becomes regex [^.]? if followed by wildcards only
 		. followed by wildcards only alternatively matches a base name with or
 		without extension, so the regex becomes base$|base.	"""
+	star_dot_three = False
 	i, n = 0, len(wild)
 	res = ''
 	while i < n:
@@ -80,10 +81,11 @@ def win32_translate(wild):
 		else:
 			res = res + re.escape(c)
 		i = i+1
-		
-	# Exception: ending star with 3-chars extension matches all longer extensions
-	if re.search('\\*.[^.]{3}$', wild):
-	    res += '[^.]*'
+	
+	if star_dot_three:
+		# Exception: ending star with 3-chars extension matches all longer extensions
+		if re.search('\\*.[^.]{3}$', wild):
+			res += '[^.]*'
 
 	res = '(?i)^%s$' % res
 	#~ print "DEBUG: Wildcard '%s' ==> Regex '%s'" % (wild, res)

@@ -2,7 +2,7 @@ w32_fnmatch
 ===========
 
 This package contains an exact Python implementation of the wildcard matching
-scheme found in the old Windows Command prompt[*].
+scheme found in modern Windows Command prompt.
 
 The w32_fnmatch.py provides a fnmatch compatible regex translator for use in
 Python's standard fnmatch module.
@@ -13,7 +13,7 @@ Python lacks an MD-DOS compatible wildcard matching engine, and in some
 situations this is frustrating.
 
 Surprisingly, the matching algorithm for Long File Names is untouched since
-Windows NT 3.1 and its CMD command processor, so this is used here.
+Windows NT 3.1 [*] and its CMD command processor, so this is used here.
 
 Following rules are implemented:
 
@@ -22,7 +22,7 @@ Following rules are implemented:
    3. `.*` repeated n times matches without or with up to n extensions
    4. `?` matches 1 character; 0 or 1 if followed by only wildcards
    5. `*` matches multiple dots; `?` does not (except in NT 3.1)
-   6. `*.xyz` (3 characters ext, even with 1-2 `??`) matches any longer xyz ext
+   6. `*.xyz` (3 characters ext, even with 1-2 `??`) matches any longer xyz ext [*]
    7. `[` and `]` are valid name characters
 
 According to official sources, the star should match zero or more characters,
@@ -53,8 +53,4 @@ rules 1-2 and 5-7 like CMD; but `?` matches 1 character only, _except_ dot.
 
 
 
-[*] NOTE: at the time these algorithms were developed, all comparison tests
-with real Windows CMD succeeded; now (2024), a few of them fail with
-Windows 11 23H2 CMD shell: so I've changed them, to reflect the new Windows
-behavior - but this makes 6/85 self tests fail. This is not a "real" failure, only a
-matter of rules changing over time.
+[*] Default: false, unless star_dot_three is set to True (to emulate pre-Windows 11 behavior).

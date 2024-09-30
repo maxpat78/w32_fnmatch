@@ -2,7 +2,7 @@ import fnmatch, os, re, subprocess, sys
 
 # Non-regex matching algorithm and prompt tester
 
-COPYRIGHT = '''Copyright (C)2012,2020,2024 by maxpat78. GNU GPL v2 applies.'''
+COPYRIGHT = '''Copyright (C)2012,2020 by maxpat78. GNU GPL v2 applies.'''
 
 """ Win32 CMD command prompt (NT 3.1+) wildcards matching algorithm,
 implementing the following rules (when the file system supports long names):
@@ -12,7 +12,7 @@ implementing the following rules (when the file system supports long names):
    3. .* repeated n times matches without or with up to n extensions
    4. ? matches 1 character; 0 or 1 if followed by only wildcards
    5. * matches multiple dots; ? does not (except in NT 3.1)
-   6. *.xyz (3 characters ext, even with 1-2 ??) matches any longer xyz ext
+   6. *.xyz (3 characters ext, even with 1-2 ??) matches any longer xyz ext if star_dot_three=True (default: False, for Windows 11 compatibility)
    7. [ and ] are valid name characters
 
 According to official sources, the star should match zero or more characters,
@@ -42,7 +42,7 @@ Under Windows 9x/ME, COMMAND.COM has long file names support and follows
 rules 1-2 and 5-7 like CMD; but ? matches 1 character only, except dot. """
 
 
-def match(s, p):
+def match(s, p, star_dot_three=False):
     class MatchObject:
         pass
 
@@ -97,9 +97,10 @@ def match(s, p):
         # Dot matched not at EOS
         if m.pi + 1 == m.lp and m.p[m.pi] == '.':
             return False
-        # Exception: *.xyz matches extensions beginning with .xyz, even with 1 or 2 ?
-        if m.lp >= 5 and m.ls - m.si < 3 and m.p[-5] == '*' and m.p[-4] == '.' and m.s[m.si-4] == '.':
-            return True
+        if star_dot_three:
+            # Exception: *.xyz matches extensions beginning with .xyz, even with 1 or 2 ?
+            if m.lp >= 5 and m.ls - m.si < 3 and m.p[-5] == '*' and m.p[-4] == '.' and m.s[m.si-4] == '.':
+                return True
         m.pi, m.si = m.p_anchors.pop()
         m.si += 1
         match_loop(m)

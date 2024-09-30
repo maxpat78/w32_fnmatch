@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "w32_fnmatch"
+authors = [
+    {name = "maxpat78", email = "maxpat78@yahoo.it"},
+]
+description = "Windows compatible wildcard matching algorithm"
+readme = "README.MD"
+requires-python = ">=3.5"
+keywords = ["FAT", "disk","image"]
+license = {text = "GPL"}
+classifiers = [
+    'Programming Language :: Python :: 3',
+    'Intended Audience :: Developers',
+    'Intended Audience :: System Administrators',
+    'Environment :: Win32 (MS Windows)',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Operating System :: Microsoft :: Windows',
+    'Topic :: System :: Filesystems'
+]
+
+[project.urls]
+homepage = "https://github.com/maxpat78/w32_fnmatch"
+repository = "https://github.com/maxpat78/w32_fnmatch.git"
+
+[tool.setuptools]
+packages = ["w32_fnmatch"]
