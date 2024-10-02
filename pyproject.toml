@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-version = "1.0"
+version = "1.01"
 name = "w32_fnmatch"
 authors = [
     {name = "maxpat78", email = "maxpat78@yahoo.it"},
@@ -11,7 +11,7 @@ authors = [
 description = "Windows compatible wildcard matching algorithm"
 readme = "README.MD"
 requires-python = ">=3.5"
-keywords = ["FAT", "disk","image"]
+keywords = ["wildcards", "fnmatch","compatibility","globbing"]
 license = {text = "GPL"}
 classifiers = [
     'Programming Language :: Python :: 3',
