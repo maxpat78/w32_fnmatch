@@ -4,10 +4,10 @@ w32_fnmatch
 This package contains an exact Python implementation of the wildcard matching
 scheme found in modern Windows Command prompt.
 
-The w32_fnmatch.py provides a fnmatch compatible regex translator for use in
+It provides a fnmatch compatible regex translator for use in
 Python's standard fnmatch module.
 
-The match_engine.py provides a more traditional algorithm.
+The `match` function provides a more traditional algorithm.
 
 Python lacks an MD-DOS compatible wildcard matching engine, and in some
 situations this is frustrating.
@@ -53,4 +53,8 @@ rules 1-2 and 5-7 like CMD; but `?` matches 1 character only, _except_ dot.
 
 
 
-[*] Default: false, unless star_dot_three is set to True (to emulate pre-Windows 11 behavior).
+[*] Default: false, unless `star_dot_three` is set (to emulate pre-Windows 11 behavior).
+
+*PLEASE NOTE*: when switching `star_dot_three`, the fnmatch._compile_pattern
+cache should be cleared, since some DOS wildcards could generate different
+regular expressions - see test_1 in tests.py.

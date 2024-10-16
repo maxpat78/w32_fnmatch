@@ -3,12 +3,12 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-version = "1.01"
 name = "w32_fnmatch"
+dynamic=["version"]
 authors = [
     {name = "maxpat78", email = "maxpat78@yahoo.it"},
 ]
-description = "Windows compatible wildcard matching algorithm"
+description = "Windows compatible wildcard matching algorithms"
 readme = "README.MD"
 requires-python = ">=3.5"
 keywords = ["wildcards", "fnmatch","compatibility","globbing"]
@@ -29,3 +29,6 @@ repository = "https://github.com/maxpat78/w32_fnmatch.git"
 
 [tool.setuptools]
 packages = ["w32_fnmatch"]
+
+[tool.setuptools.dynamic]
+version = {attr = "w32_fnmatch.__version__"}
