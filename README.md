@@ -25,6 +25,26 @@ Following rules are implemented:
    6. `*.xyz` (3 characters ext, even with 1-2 `??`) matches any longer xyz ext [*]
    7. `[` and `]` are valid name characters
 
+In recent Windows editions (Windows 11+ ?), a strange behavior occurs about rule 6:
+it is honored in some directories, but not in others. This was tested with following batch:
+
+```
+@echo off
+REM use TWILD <DIR> to test star-dot-3 wildcard expansion to longer extensions
+set VAR=
+echo. >%1\abcde.fghi
+FOR /F "tokens=*" %%g IN ('dir /b %1\*.fgh') do (SET VAR=%%g)
+if not "%VAR%" == "abcde.fghi" goto notfound
+:found
+echo DIR *.fgh matches *.fghi
+goto end
+:notfound
+echo DIR *.fgh does not match *.fghi
+:end
+del %1\abcde.fghi
+```
+
+
 According to official sources, the star should match zero or more characters,
 and the question mark exactly one.
 
@@ -53,7 +73,7 @@ rules 1-2 and 5-7 like CMD; but `?` matches 1 character only, _except_ dot.
 
 
 
-[*] Default: false, unless `star_dot_three` is set (to emulate pre-Windows 11 behavior).
+[*] Default: false, unless `star_dot_three` is set (to emulate traditional behavior).
 
 *PLEASE NOTE*: when switching `star_dot_three`, the fnmatch._compile_pattern
 cache should be cleared, since some DOS wildcards could generate different
