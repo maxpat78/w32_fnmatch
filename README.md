@@ -4,16 +4,14 @@ w32_fnmatch
 This package contains an exact Python implementation of the wildcard matching
 scheme found in modern Windows Command prompt.
 
-It provides a fnmatch compatible regex translator for use in
-Python's standard fnmatch module.
-
-The `match` function provides a more traditional algorithm.
+It provides both a fnmatch compatible regex translator for use in
+Python's standard fnmatch module and a more traditional `match` algorithm.
 
 Python lacks an MD-DOS compatible wildcard matching engine, and in some
 situations this is frustrating.
 
 Surprisingly, the matching algorithm for Long File Names is untouched since
-Windows NT 3.1 [*] and its CMD command processor, so this is used here.
+Windows NT 3.1 and its CMD command processor, so this is used here.
 
 Following rules are implemented:
 
@@ -22,30 +20,11 @@ Following rules are implemented:
    3. `.*` repeated n times matches without or with up to n extensions
    4. `?` matches 1 character; 0 or 1 if followed by only wildcards
    5. `*` matches multiple dots; `?` does not (except in NT 3.1)
-   6. `*.xyz` (3 characters ext, even with 1-2 `??`) matches any longer xyz ext [*]
+   6. `*.xyz` (3 characters ext, even with 1-2 `??`) matches any longer xyz ext
+      (unless short 8dot3 DOS names are disabled on a volume: Windows 8+) [*]
    7. `[` and `]` are valid name characters
 
-In recent Windows editions (Windows 11+ ?), a strange behavior occurs about rule 6:
-it is honored in some directories, but not in others. This was tested with following batch:
-
-```
-@echo off
-REM use TWILD <DIR> to test star-dot-3 wildcard expansion to longer extensions
-set VAR=
-echo. >%1\abcde.fghi
-FOR /F "tokens=*" %%g IN ('dir /b %1\*.fgh') do (SET VAR=%%g)
-if not "%VAR%" == "abcde.fghi" goto notfound
-:found
-echo DIR *.fgh matches *.fghi
-goto end
-:notfound
-echo DIR *.fgh does not match *.fghi
-:end
-del %1\abcde.fghi
-```
-
-
-According to official sources, the star should match zero or more characters,
+According to MSDN, the star should match zero or more characters,
 and the question mark exactly one.
 
 Reviewing the help for FsRtlIsNameInExpression API in NT kernel, it seems
@@ -73,7 +52,9 @@ rules 1-2 and 5-7 like CMD; but `?` matches 1 character only, _except_ dot.
 
 
 
-[*] Default: false, unless `star_dot_three` is set (to emulate traditional behavior).
+[*] Default: false, unless `star_dot_three` is set, to emulate traditional
+behavior. In an NTFS volume, rule 6 is honored when 8dot3names are enabled
+(i.e. in the system volume C: or by fsutil tool).
 
 *PLEASE NOTE*: when switching `star_dot_three`, the fnmatch._compile_pattern
 cache should be cleared, since some DOS wildcards could generate different
